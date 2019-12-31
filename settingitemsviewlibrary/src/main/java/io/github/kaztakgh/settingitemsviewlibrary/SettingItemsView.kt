@@ -347,10 +347,12 @@ class SettingItemsView : RecyclerView {
 
     /**
      * アイテムの更新
+     * @deprecated v1.1.0
      *
      * @param item 更新元のアイテム
      * @param update 更新後のアイテム
      */
+    @Deprecated(message = "アイテムの検索が安定しないため")
     fun updateItem(item: ItemInterface, update: ItemInterface) {
         // 更新元のアイテムが見つからない場合、処理終了
         if (!this.isContainItemFromAdapter(item)) return
@@ -362,6 +364,27 @@ class SettingItemsView : RecyclerView {
         // 画面の更新
         // レイアウトの維持のために位置と更新アイテムをパラメータに含める
         itemsAdapter.notifyItemChanged(position, update)
+    }
+
+    /**
+     * アイテムの更新
+     * @since v1.1.0
+     *
+     * @param tag 更新対象のアイテムのタグ
+     * @param item 更新内容
+     */
+    fun updateItem(tag: String, item: ItemInterface) {
+        // 各要素をタグでフィルタリングする
+        // 該当するタグの位置を取得する
+        val itemPos: Int = itemsAdapter.itemsList.map { it.tag }.indexOf(tag)
+        // タグの位置が0以上かつ更新元のアイテムのタグが一致する必要がある
+        require(itemPos >= 0 && itemsAdapter.itemsList[itemPos].tag == tag)
+
+        // Adapterのリストを更新
+        itemsAdapter.itemsList[itemPos] = item
+        // 画面の更新処理
+        // レイアウトの維持のために位置と更新アイテムをパラメータに含める
+        itemsAdapter.notifyItemChanged(itemPos, item)
     }
 
     /**
