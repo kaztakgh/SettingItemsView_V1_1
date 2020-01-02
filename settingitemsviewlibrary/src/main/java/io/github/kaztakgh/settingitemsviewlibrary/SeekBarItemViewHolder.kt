@@ -33,7 +33,9 @@ internal class SeekBarItemViewHolder(
             textView.alpha = alpha
             if (iconView.visibility == View.VISIBLE)
                 iconView.alpha = alpha
-            stateBar.alpha = alpha
+
+            // 選択不可能の場合はシークバーの操作を行えないようにする
+            stateBar.isEnabled = value
         }
 
     /**

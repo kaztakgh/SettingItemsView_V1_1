@@ -24,8 +24,8 @@ data class SwitchItem(
     val bmpIcon: Bitmap? = null,
     var enabled: Boolean = true,
     var checked: Boolean = false,
-    val textOnTrue: String = "ON",
-    val textOnFalse: String = "OFF"
+    val textOnTrue: String = SwitchItemViewHolder.STATE_ON_TEXT_DEFAULT,
+    val textOnFalse: String = SwitchItemViewHolder.STATE_OFF_TEXT_DEFAULT
 ) : ItemInterface, Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString() as String,

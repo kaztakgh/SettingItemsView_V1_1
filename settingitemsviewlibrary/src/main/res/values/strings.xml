@@ -3,12 +3,8 @@
     <dimen name="icon_size_dp">48dp</dimen>
     <string name="dialog_positive_label">OK</string>
     <string name="dialog_negative_label">Cancel</string>
-    <!-- Switch -->
-    <string name="switch_text_true">ON</string>
-    <string name="switch_text_false">OFF</string>
     <!-- InputText -->
     <string name="button_text_confirm">確定</string>
-    <integer name="input_text_init_length">64</integer>
     <!-- Exception -->
     <string name="unique_tag_exception">タグは一意である必要があります</string>
 </resources>

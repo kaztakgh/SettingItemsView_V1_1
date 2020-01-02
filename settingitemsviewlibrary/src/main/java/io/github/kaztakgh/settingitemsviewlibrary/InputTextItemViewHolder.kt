@@ -23,10 +23,15 @@ import androidx.constraintlayout.widget.Group
 internal class InputTextItemViewHolder(
     view: View
 ) : NormalItemViewHolder(view) {
+    companion object {
+        /**
+         * パラメータ省略時の文字列の長さ
+         */
+        const val INIT_LENGTH = 64
+    }
     private val editor: EditText = view.findViewById(R.id.et_input)
     private val confirmButton: Button = view.findViewById(R.id.btn_confirm)
     private val dropdown: ImageView = view.findViewById(R.id.iv_dropdown)
-    private val textGrp: Group = view.findViewById(R.id.grp_text)
     private val editGrp: Group = view.findViewById(R.id.grp_edit)
 
     /**
@@ -57,14 +62,17 @@ internal class InputTextItemViewHolder(
             // 選択可能であるかどうかを透明度で示す
             // 選択可能な場合は全てのパーツを不透明、選択不可能な場合は全てのパーツを半透明に変更する
             val alpha: Float = if (value) 1.0f else 0.5f
-            textGrp.alpha = alpha
-            editGrp.alpha = alpha
+            textView.alpha = alpha
+            titleView.alpha = alpha
+            dropdown.alpha = alpha
+            editor.alpha = alpha
+            confirmButton.alpha = alpha
         }
 
     /**
      * テキストの長さ
      */
-    var length: Int = R.integer.input_text_init_length
+    var length: Int = INIT_LENGTH
         set(value) {
             field = value
             editor.width = value

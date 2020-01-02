@@ -16,7 +16,7 @@ import android.text.InputType
  * @property bmpIcon 左側に表示するアイコン(省略時null)
  * @property enabled 選択可能であるか(省略時true)
  * @property text テキスト
- * @property length テキストの長さ
+ * @property length テキストの長さ(省略時はViewHolderで指定した長さを利用する)
  * @property inputType 入力可能な文字列の形式(InputTypeクラスの定数を利用すること)
  */
 data class InputTextItem(
@@ -25,7 +25,7 @@ data class InputTextItem(
     val bmpIcon: Bitmap? = null,
     var enabled: Boolean = true,
     var text: String = "",
-    val length: Int = R.integer.input_text_init_length,
+    val length: Int = InputTextItemViewHolder.INIT_LENGTH,
     val inputType: Int = InputType.TYPE_CLASS_TEXT
 ) : ItemInterface, Parcelable {
     constructor(parcel: Parcel) : this(

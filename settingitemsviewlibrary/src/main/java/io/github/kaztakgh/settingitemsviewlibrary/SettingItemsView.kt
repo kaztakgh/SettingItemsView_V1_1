@@ -257,10 +257,8 @@ class SettingItemsView : RecyclerView {
      * @return アダプター内アイテム
      */
     fun findItemByTag(tag: String): ItemInterface {
-        // 各要素をタグでフィルタリングする
-        val tagArray: List<String> = itemsAdapter.itemsList.map { it.tag }
         // 該当するタグの位置を取得する
-        val itemPos: Int = tagArray.indexOf(tag)
+        val itemPos: Int = getAdapterTagArray().indexOf(tag)
         return itemsAdapter.itemsList[itemPos]
     }
 
@@ -325,6 +323,14 @@ class SettingItemsView : RecyclerView {
     }
 
     /**
+     * タグの配列を取得する
+     * @since v1.1.0
+     *
+     * @return 各要素をタグでフィルタリングした配列
+     */
+    private fun getAdapterTagArray() : List<String> = itemsAdapter.itemsList.map { it.tag }
+
+    /**
      * アダプター内にアイテムが含まれるかを調べる
      *
      * @param item アイテム
@@ -376,9 +382,9 @@ class SettingItemsView : RecyclerView {
     fun updateItem(tag: String, item: ItemInterface) {
         // 各要素をタグでフィルタリングする
         // 該当するタグの位置を取得する
-        val itemPos: Int = itemsAdapter.itemsList.map { it.tag }.indexOf(tag)
+        val itemPos: Int = getAdapterTagArray().indexOf(tag)
         // タグの位置が0以上かつ更新元のアイテムのタグが一致する必要がある
-        require(itemPos >= 0 && itemsAdapter.itemsList[itemPos].tag == tag)
+        require(itemPos >= 0 && itemsAdapter.itemsList[itemPos].tag == item.tag)
 
         // Adapterのリストを更新
         itemsAdapter.itemsList[itemPos] = item

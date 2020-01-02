@@ -21,6 +21,7 @@ internal class SpinnerItemViewHolder(
 
     /**
      * テキスト
+     * (現時点では使用しない)
      */
     override var text: String = ""
         get() = super.text
@@ -43,7 +44,8 @@ internal class SpinnerItemViewHolder(
             val alpha: Float = if (value) 1.0f else 0.5f
             titleView.alpha = alpha
             textView.alpha = alpha
-            spinner.alpha = alpha
+
+            // 選択不可能である場合はスピナーの操作をすることが出来ないようにする
             spinner.isEnabled = value
             spinner.isClickable = value
         }

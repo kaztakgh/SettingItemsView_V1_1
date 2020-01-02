@@ -17,6 +17,16 @@ import android.widget.Switch
 internal class SwitchItemViewHolder(
     view: View
 ) : NormalItemViewHolder(view) {
+    companion object {
+        /**
+         * スイッチがONの時のテキスト(デフォルト)
+         */
+        const val STATE_ON_TEXT_DEFAULT = "ON"
+        /**
+         * スイッチがOFFの時のテキスト(デフォルト)
+         */
+        const val STATE_OFF_TEXT_DEFAULT = "OFF"
+    }
     private val stateSwitch: Switch = view.findViewById(R.id.sw_state)
 
     /**
@@ -33,8 +43,10 @@ internal class SwitchItemViewHolder(
             textView.alpha = alpha
             if (iconView.visibility == View.VISIBLE)
                 iconView.alpha = alpha
-            stateSwitch.alpha = alpha
+
+            // 選択不可能である場合はスイッチの操作をすることが出来ないようにする
             stateSwitch.isClickable = value
+            stateSwitch.isEnabled = value
         }
 
     /**
@@ -50,20 +62,20 @@ internal class SwitchItemViewHolder(
 
     /**
      * ONの時のテキスト
-     * 初回時のみ設定可能にする
+     * 空文字列は登録できないようにする
      */
-    var textOnTrue: String = ""
+    var textOnTrue: String = STATE_ON_TEXT_DEFAULT
         set(value) {
-            if (field === "") field = value
+            if (value.isNotEmpty()) field = value
         }
 
     /**
      * OFFの時のテキスト
-     * 初回時のみ設定可能にする
+     * 空文字列は登録できないようにする
      */
-    var textOnFalse: String = ""
+    var textOnFalse: String = STATE_OFF_TEXT_DEFAULT
         set(value) {
-            if (field === "") field = value
+            if (value.isNotEmpty()) field = value
         }
 
     /**

@@ -5,9 +5,10 @@ package io.github.kaztakgh.settingitemsviewlibrary
 
 import android.content.Context
 import android.os.Build
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.GONE
+import android.view.View.*
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
@@ -28,11 +29,29 @@ class SettingItemsAdapter(
     var itemsList: ArrayList<ItemInterface>
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     companion object {
+        /**
+         * ヘッダー
+         */
         const val VIEW_TYPE_HEADER: Int = 0
+        /**
+         * 通常(タイトルとテキスト)
+         */
         const val VIEW_TYPE_TITLE_AND_TEXT: Int = 1
+        /**
+         * スイッチによる選択
+         */
         const val VIEW_TYPE_SWITCH: Int = 2
+        /**
+         * スピナーによる選択
+         */
         const val VIEW_TYPE_SPINNER: Int = 3
+        /**
+         * シークバーでの数値選択
+         */
         const val VIEW_TYPE_SEEKBAR: Int = 4
+        /**
+         * 文字入力
+         */
         const val VIEW_TYPE_INPUT_TEXT: Int = 5
     }
     lateinit var context: Context
@@ -101,15 +120,18 @@ class SettingItemsAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         this.context = parent.context
         when(viewType) {
+            // ヘッダー
             VIEW_TYPE_HEADER -> {
                 val layoutInflater = LayoutInflater.from(context)
                 val view = layoutInflater.inflate(R.layout.header_item, parent, false)
                 return HeaderItemViewHolder(view)
             }
+            // スイッチ
             VIEW_TYPE_SWITCH -> {
                 val layoutInflater = LayoutInflater.from(context)
                 val view = layoutInflater.inflate(R.layout.switch_item, parent, false)
                 val holder = SwitchItemViewHolder(view)
+                // クリックしたときの処理
                 view.setOnClickListener { v ->
                     itemsView.let {
                         holder.itemClickListener?.onItemClick(v, it!!.getChildAdapterPosition(v))
@@ -117,20 +139,24 @@ class SettingItemsAdapter(
                 }
                 return holder
             }
+            // スピナー
             VIEW_TYPE_SPINNER -> {
                 val layoutInflater = LayoutInflater.from(context)
                 val view = layoutInflater.inflate(R.layout.spinner_item, parent, false)
                 return SpinnerItemViewHolder(view)
             }
+            // シークバー
             VIEW_TYPE_SEEKBAR -> {
                 val layoutInflater = LayoutInflater.from(context)
                 val view = layoutInflater.inflate(R.layout.seekbar_item, parent, false)
                 return SeekBarItemViewHolder(view)
             }
+            // 文字入力
             VIEW_TYPE_INPUT_TEXT -> {
                 val layoutInflater = LayoutInflater.from(context)
                 val view = layoutInflater.inflate(R.layout.input_text_item, parent, false)
                 val holder = InputTextItemViewHolder(view)
+                // クリックしたときの処理
                 view.setOnClickListener { v ->
                     itemsView.let {
                         holder.itemClickListener?.onItemClick(v, it!!.getChildAdapterPosition(v))
@@ -138,10 +164,12 @@ class SettingItemsAdapter(
                 }
                 return holder
             }
+            // それ以外
             else -> {
                 val layoutInflater = LayoutInflater.from(context)
                 val view = layoutInflater.inflate(R.layout.normal_item, parent, false)
                 val holder = NormalItemViewHolder(view)
+                // クリックしたときの処理
                 view.setOnClickListener { v ->
                     itemsView.let {
                         holder.itemClickListener?.onItemClick(v, it!!.getChildAdapterPosition(v))
@@ -165,12 +193,19 @@ class SettingItemsAdapter(
      * @return integer ビューの種類を数値で指定
      */
     override fun getItemViewType(position: Int): Int {
+        // アイテムの型によって表示する方法を変更する
         return when(itemsList[position]) {
+            // ヘッダー
             is HeaderItem -> VIEW_TYPE_HEADER
+            // スイッチ
             is SwitchItem -> VIEW_TYPE_SWITCH
+            // スピナー
             is SpinnerItem -> VIEW_TYPE_SPINNER
+            // シークバー
             is SeekBarItem -> VIEW_TYPE_SEEKBAR
+            // 文字入力
             is InputTextItem -> VIEW_TYPE_INPUT_TEXT
+            // それ以外
             else -> VIEW_TYPE_TITLE_AND_TEXT
         }
     }
@@ -298,21 +333,21 @@ class SettingItemsAdapter(
         holder.isSelectable = item.enabled
         holder.isChecked = item.checked
         val position: Int = holder.adapterPosition
-        if (item.enabled) {
-            holder.itemClickListener = object : NormalItemViewHolder.ItemClickListener {
-                /**
-                 * アイテムをクリックしたときの処理
-                 *
-                 * @param view レイアウトビュー
-                 * @param position アダプター内のアイテムの位置
-                 */
-                override fun onItemClick(view: View, position: Int) {
-                    changeSwitchCheck(holder, item, position)
-                }
-            }
-            holder.getStateSwitch().setOnClickListener {
+        holder.itemClickListener = object : NormalItemViewHolder.ItemClickListener {
+            /**
+             * アイテムをクリックしたときの処理
+             *
+             * @param view レイアウトビュー
+             * @param position アダプター内のアイテムの位置
+             */
+            override fun onItemClick(view: View, position: Int) {
+                // スイッチの状態を変更する
                 changeSwitchCheck(holder, item, position)
             }
+        }
+        holder.getStateSwitch().setOnClickListener {
+            // スイッチの状態を変更する
+            changeSwitchCheck(holder, item, position)
         }
     }
 
@@ -324,9 +359,15 @@ class SettingItemsAdapter(
      * @param position アダプター内のリストの順序
      */
     private fun changeSwitchCheck(holder: SwitchItemViewHolder, item: SwitchItem, position: Int) {
+        val listItem: SwitchItem = itemsList[position] as SwitchItem
+        // スイッチの操作ができない状態の場合はここで終了
+        // (returnをここで指定しているのは、2通りの操作で変更できてしまうため)
+        if (!listItem.enabled) return
+
+        // スイッチの状態の変更
         val checked: Boolean = !item.checked
         holder.isChecked = checked
-        (itemsList[position] as SwitchItem).checked = checked
+        listItem.checked = checked
         // 変更後の処理がある場合
         if (item.valueChangedListener != null) {
             item.valueChangedListener!!.onSwitchCheckChanged(checked)
@@ -366,10 +407,8 @@ class SettingItemsAdapter(
              * @param id 選択した列のID
              */
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                // アイテムが有効時
-                if (item.enabled) {
-                    (itemsList[holder.adapterPosition] as SpinnerItem).select = position
-                }
+                // アイテムの選択を変更
+                (itemsList[holder.adapterPosition] as SpinnerItem).select = position
                 // 変更後の処理がある場合
                 if (item.valueChangedListener != null && item.focusable) {
                     item.valueChangedListener!!.onSelectorItemChanged(position)
@@ -409,18 +448,19 @@ class SettingItemsAdapter(
         if (!item.options.isNullOrEmpty()) {
             holder.text = item.options[item.select]
         }
-        // アイテムが有効時
-        if (item.enabled) {
-            holder.itemClickListener = object : NormalItemViewHolder.ItemClickListener{
-                /**
-                 * アイテムをクリックしたときの処理
-                 *
-                 * @param view レイアウトビュー
-                 * @param position アダプター内のアイテムの位置
-                 */
-                override fun onItemClick(view: View, position: Int) {
-                    showSingleSelectDialog(item)
-                }
+        // アイテムが無効時の場合は処理をダイアログ出力を行わない
+        if (!item.enabled) return
+
+        holder.itemClickListener = object : NormalItemViewHolder.ItemClickListener{
+            /**
+             * アイテムをクリックしたときの処理
+             *
+             * @param view レイアウトビュー
+             * @param position アダプター内のアイテムの位置
+             */
+            override fun onItemClick(view: View, position: Int) {
+                // ダイアログ出力
+                showSingleSelectDialog(item)
             }
         }
     }
@@ -432,9 +472,11 @@ class SettingItemsAdapter(
      */
     private fun showSingleSelectDialog(item: SingleSelectItem) {
         // ダイアログの出力
+        // 実装元がfragmentの場合
         if (fragment != null && fragmentManager != null) {
             item.buildDialog().show(fragment as Fragment, fragmentManager as FragmentManager)
         }
+        // 実装元がactivityの場合
         else {
             item.buildDialog().show(context)
         }
@@ -455,19 +497,19 @@ class SettingItemsAdapter(
         if (!item.options.isNullOrEmpty()) {
             holder.text = if (item.text.isBlank()) item.nothingsSelectString else item.text
         }
-        // アイテムが有効時
-        // アイテムが有効時
-        if (item.enabled) {
-            holder.itemClickListener = object : NormalItemViewHolder.ItemClickListener{
-                /**
-                 * アイテムをクリックしたときの処理
-                 *
-                 * @param view レイアウトビュー
-                 * @param position アダプター内のアイテムの位置
-                 */
-                override fun onItemClick(view: View, position: Int) {
-                    showMultiSelectDialog(item)
-                }
+        // アイテムが無効時の場合は処理をダイアログ出力を行わない
+        if (!item.enabled) return
+
+        holder.itemClickListener = object : NormalItemViewHolder.ItemClickListener{
+            /**
+             * アイテムをクリックしたときの処理
+             *
+             * @param view レイアウトビュー
+             * @param position アダプター内のアイテムの位置
+             */
+            override fun onItemClick(view: View, position: Int) {
+                // ダイアログ出力
+                showMultiSelectDialog(item)
             }
         }
     }
@@ -479,9 +521,11 @@ class SettingItemsAdapter(
      */
     private fun showMultiSelectDialog(item: MultiSelectItem) {
         // ダイアログの出力
+        // 実装元がfragmentの場合
         if (fragment != null && fragmentManager != null) {
             item.buildDialog().show(fragment as Fragment, fragmentManager as FragmentManager)
         }
+        // 実装元がactivityの場合
         else {
             item.buildDialog().show(context)
         }
@@ -508,6 +552,9 @@ class SettingItemsAdapter(
         holder.state = if (arrayPos > -1) arrayPos else 0
         holder.text = createSeekBarStatusText(paramsArray[holder.state], item.unit)
         val stateBar: SeekBar = holder.getStateBar()
+        // アイテムが無効時の場合は以降の処理を行わない
+        if (!item.enabled) return
+
         // バー操作時の挙動
         stateBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             /**
@@ -576,18 +623,19 @@ class SettingItemsAdapter(
         holder.isSelectable = item.enabled
         // 日付の出力
         holder.text = item.text
-        // アイテムが有効時
-        if (item.enabled) {
-            holder.itemClickListener = object : NormalItemViewHolder.ItemClickListener {
-                /**
-                 * アイテムをクリックしたときの処理
-                 *
-                 * @param view レイアウトビュー
-                 * @param position アダプター内のアイテムの位置
-                 */
-                override fun onItemClick(view: View, position: Int) {
-                    showDateDialog(item)
-                }
+        // アイテムが無効時の場合は処理をダイアログ出力を行わない
+        if (!item.enabled) return
+
+        // アイテムをクリックしたときの処理
+        holder.itemClickListener = object : NormalItemViewHolder.ItemClickListener {
+            /**
+             * アイテムをクリックしたときの処理
+             *
+             * @param view レイアウトビュー
+             * @param position アダプター内のアイテムの位置
+             */
+            override fun onItemClick(view: View, position: Int) {
+                showDateDialog(item)
             }
         }
     }
@@ -599,9 +647,11 @@ class SettingItemsAdapter(
      */
     private fun showDateDialog(item: DateItem) {
         // ダイアログの出力
+        // 実装元がfragmentの場合
         if (fragment != null && fragmentManager != null) {
             item.buildDialog().show(fragment as Fragment, fragmentManager as FragmentManager)
         }
+        // 実装元がactivityの場合
         else {
             item.buildDialog().show(context)
         }
@@ -620,18 +670,19 @@ class SettingItemsAdapter(
         holder.isSelectable = item.enabled
         // 時刻の出力
         holder.text = item.text
-        // アイテムが有効時
-        if (item.enabled) {
-            holder.itemClickListener = object : NormalItemViewHolder.ItemClickListener {
-                /**
-                 * アイテムをクリックしたときの処理
-                 *
-                 * @param view レイアウトビュー
-                 * @param position アダプター内のアイテムの位置
-                 */
-                override fun onItemClick(view: View, position: Int) {
-                    showTimeDialog(item)
-                }
+        // アイテムが無効時の場合は処理をダイアログ出力を行わない
+        if (!item.enabled) return
+
+        // アイテムをクリックしたときの処理
+        holder.itemClickListener = object : NormalItemViewHolder.ItemClickListener {
+            /**
+             * アイテムをクリックしたときの処理
+             *
+             * @param view レイアウトビュー
+             * @param position アダプター内のアイテムの位置
+             */
+            override fun onItemClick(view: View, position: Int) {
+                showTimeDialog(item)
             }
         }
     }
@@ -643,9 +694,11 @@ class SettingItemsAdapter(
      */
     private fun showTimeDialog(item: TimeItem) {
         // ダイアログの出力
+        // 実装元がfragmentの場合
         if (fragment != null && fragmentManager != null) {
             item.buildDialog().show(fragment as Fragment, fragmentManager as FragmentManager)
         }
+        // 実装元がactivityの場合
         else {
             item.buildDialog().show(context)
         }
@@ -669,44 +722,45 @@ class SettingItemsAdapter(
             ViewHelper.getColorAttr(context, android.R.attr.textColorPrimary)
         )
         // 編集部分の表示設定(初期値はView.GONE)
-        holder.getEditorArea().visibility = View.GONE
-        // アイテムが有効時
-        if (item.enabled) {
-            holder.itemClickListener = object : NormalItemViewHolder.ItemClickListener {
-                /**
-                 * アイテムをクリックしたときの処理
-                 *
-                 * @param view レイアウトビュー
-                 * @param position アダプター内のアイテムの位置
-                 */
-                override fun onItemClick(view: View, position: Int) {
-                    // 編集エリアを表示する
-                    if (holder.getEditorArea().visibility == View.GONE) {
-                        holder.rotateDropDown(true)
-                        if (item.text.isNotEmpty())
-                            holder.getEditor().setText(item.text)
-                        holder.getEditorArea().visibility = View.VISIBLE
-                    }
-                    else {
-                        // 文字入力処理を終了
-                        finishEditText(holder)
-                        holder.text = item.text
-                        holder.rotateDropDown(false)
-                    }
+        holder.getEditorArea().visibility = GONE
+        // アイテムが有効ではない場合はここで処理を終了
+        if (!item.enabled) return
+
+        // アイテムをクリックしたときの処理
+        holder.itemClickListener = object : NormalItemViewHolder.ItemClickListener {
+            /**
+             * アイテムをクリックしたときの処理
+             *
+             * @param view レイアウトビュー
+             * @param position アダプター内のアイテムの位置
+             */
+            override fun onItemClick(view: View, position: Int) {
+                // 編集エリアを表示する
+                if (holder.getEditorArea().visibility == GONE) {
+                    holder.rotateDropDown(true)
+                    if (item.text.isNotEmpty())
+                        holder.getEditor().setText(item.text)
+                    holder.getEditorArea().visibility = VISIBLE
+                }
+                else {
+                    // 文字入力処理を終了
+                    finishEditText(holder)
+                    holder.text = item.text
+                    holder.rotateDropDown(false)
                 }
             }
-            // 入力文字列を確定する処理
-            holder.getConfirmButton().setOnClickListener {
-                // 文字入力処理を終了
-                finishEditText(holder)
-                // 入力文字列をビューに表示
-                holder.text = holder.getEditor().text.toString()
-                item.text = holder.text
-                holder.rotateDropDown(false)
-                // 変更後の処理がある場合
-                if (item.textChangedListener != null) {
-                    item.textChangedListener!!.onTextChanged(item.text)
-                }
+        }
+        // 入力文字列を確定する処理
+        holder.getConfirmButton().setOnClickListener {
+            // 文字入力処理を終了
+            finishEditText(holder)
+            // 入力文字列をビューに表示
+            holder.text = holder.getEditor().text.toString()
+            item.text = holder.text
+            holder.rotateDropDown(false)
+            // 変更後の処理がある場合
+            if (item.textChangedListener != null) {
+                item.textChangedListener!!.onTextChanged(item.text)
             }
         }
     }
@@ -738,20 +792,20 @@ class SettingItemsAdapter(
         holder.isSelectable = item.enabled
         // ファイルパスの設定
         holder.text = if (item.uri != null) item.getContentPathStringFromUri(context, item.uri!!) else ""
-        // アイテムが有効時
-        if (item.enabled) {
-            // クリックされたときの挙動を指定する
-            holder.itemClickListener = object : NormalItemViewHolder.ItemClickListener {
-                /**
-                 * アイテムをクリックしたときの処理
-                 *
-                 * @param view レイアウトビュー
-                 * @param position アダプター内のアイテムの位置
-                 */
-                override fun onItemClick(view: View, position: Int) {
-                    // パーミッションの取得(Android6.0以降)
-                    item.checkExternalStoragePermission(context)
-                }
+        // アイテムが有効ではない場合はここで処理を終了
+        if (!item.enabled) return
+
+        // クリックされたときの挙動を指定する
+        holder.itemClickListener = object : NormalItemViewHolder.ItemClickListener {
+            /**
+             * アイテムをクリックしたときの処理
+             *
+             * @param view レイアウトビュー
+             * @param position アダプター内のアイテムの位置
+             */
+            override fun onItemClick(view: View, position: Int) {
+                // パーミッションの取得(Android6.0以降)
+                item.checkExternalStoragePermission(context)
             }
         }
     }
