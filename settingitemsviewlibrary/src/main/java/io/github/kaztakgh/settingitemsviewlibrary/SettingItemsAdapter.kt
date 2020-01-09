@@ -5,7 +5,6 @@ package io.github.kaztakgh.settingitemsviewlibrary
 
 import android.content.Context
 import android.os.Build
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.*
@@ -24,9 +23,13 @@ import io.github.kaztakgh.viewhelper.ViewHelper
  * RecyclerViewにアイテムを表示するためのアダプター
  *
  * @property itemsList Viewで表示するアイテムのリスト
+ * @property fragment 使用する対象のFragment
+ * @property fragmentManager fragmentが所有するFragmentManager
  */
 class SettingItemsAdapter(
-    var itemsList: ArrayList<ItemInterface>
+    internal var itemsList: ArrayList<ItemInterface>,
+    private var fragment: Fragment? = null,
+    private var fragmentManager: FragmentManager? = null
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     companion object {
         /**
@@ -54,20 +57,8 @@ class SettingItemsAdapter(
          */
         const val VIEW_TYPE_INPUT_TEXT: Int = 5
     }
-    lateinit var context: Context
+    private lateinit var context: Context
     private var itemsView: RecyclerView? = null
-
-    /**
-     * Fragmentを利用するときにダイアログ系のアイテムを使用する場合は指定すること
-     * @see SettingItemsView.fragment
-     */
-    var fragment: Fragment? = null
-
-    /**
-     * Fragmentを利用するときにダイアログ系のアイテムを使用する場合は指定すること
-     * @see SettingItemsView.fragmentManager
-     */
-    var fragmentManager: FragmentManager? = null
 
     /**
      * Called by RecyclerView when it starts observing this Adapter.
@@ -305,6 +296,46 @@ class SettingItemsAdapter(
     }
 
     /**
+     * 指定したタグを持つアイテムの更新
+     * @since v1.2.0
+     * @exception IllegalArgumentException itemsListのタグを変更しようとした場合に発生
+     *
+     * @param tag 更新元のアイテムのタグ
+     * @param item 更新するアイテム<br>更新元のアイテムのタグと一致させる必要がある
+     */
+    fun update(tag: String, item: ItemInterface) {
+        // 更新箇所の検索
+        // itemsListはタグを一意にする必要があるため、indexOfFirstで検索可能
+        val index = itemsList.indexOfFirst { it.tag === tag }
+        // 該当する箇所がない場合は処理を終了
+        if (index < 0) return
+        // 更新アイテムのタグと指定タグが異なる場合はエラー処理を行う
+        check(index >= 0 && itemsList[index].tag === item.tag)
+
+        // itemsListの更新
+        itemsList[index] = item
+
+        // 表示を更新
+        notifyItemChanged(index)
+    }
+
+    /**
+     * リクエストコードからアダプター内アイテムを取得する
+     * 取得した際にアダプター内の状態を利用するには、Activity/Fragmentでキャストを行うこと
+     * @since v1.2.0
+     *
+     * @param requestCode リクエストコード
+     * @return アダプター内アイテム
+     */
+    fun getItemFromRequestCode(requestCode: Int): ItemInterface {
+        // リクエストコードの配列を取得する
+        val reqCodeArray: ArrayList<Int?> = requestCodeArray()
+        // 該当するリクエストコードの位置を取得する
+        val itemPos: Int = reqCodeArray.indexOf(requestCode)
+        return itemsList[itemPos]
+    }
+
+    /**
      * HeaderItemの内容をitemから指定する
      *
      * @param holder アイテムを表示するビューホルダー
@@ -369,8 +400,8 @@ class SettingItemsAdapter(
         holder.isChecked = checked
         listItem.checked = checked
         // 変更後の処理がある場合
-        if (item.valueChangedListener != null) {
-            item.valueChangedListener!!.onSwitchCheckChanged(checked)
+        if (item.stateChangedListener != null) {
+            item.stateChangedListener!!.onSwitchCheckChange(this, checked)
         }
     }
 
@@ -410,8 +441,8 @@ class SettingItemsAdapter(
                 // アイテムの選択を変更
                 (itemsList[holder.adapterPosition] as SpinnerItem).select = position
                 // 変更後の処理がある場合
-                if (item.valueChangedListener != null && item.focusable) {
-                    item.valueChangedListener!!.onSelectorItemChanged(position)
+                if (item.selectChangeListener != null && item.focusable) {
+                    item.selectChangeListener!!.onItemSelectChanged(this@SettingItemsAdapter, position)
                 }
                 // 初回操作時
                 when {
@@ -474,7 +505,7 @@ class SettingItemsAdapter(
         // ダイアログの出力
         // 実装元がfragmentの場合
         if (fragment != null && fragmentManager != null) {
-            item.buildDialog().show(fragment as Fragment, fragmentManager as FragmentManager)
+            item.buildDialog().show(fragment!!, fragmentManager!!)
         }
         // 実装元がactivityの場合
         else {
@@ -523,7 +554,7 @@ class SettingItemsAdapter(
         // ダイアログの出力
         // 実装元がfragmentの場合
         if (fragment != null && fragmentManager != null) {
-            item.buildDialog().show(fragment as Fragment, fragmentManager as FragmentManager)
+            item.buildDialog().show(fragment!!, fragmentManager!!)
         }
         // 実装元がactivityの場合
         else {
@@ -590,8 +621,8 @@ class SettingItemsAdapter(
              */
             override fun onStopTrackingTouch(seekBar: SeekBar?) {
                 // 変更後の動作
-                if (item.valueChangedListener != null) {
-                    item.valueChangedListener!!.onSelectorItemChanged(item.state)
+                if (item.valueChangeListener != null) {
+                    item.valueChangeListener!!.onItemValueChange(this@SettingItemsAdapter, item.state)
                 }
             }
         })
@@ -649,7 +680,7 @@ class SettingItemsAdapter(
         // ダイアログの出力
         // 実装元がfragmentの場合
         if (fragment != null && fragmentManager != null) {
-            item.buildDialog().show(fragment as Fragment, fragmentManager as FragmentManager)
+            item.buildDialog().show(fragment!!, fragmentManager!!)
         }
         // 実装元がactivityの場合
         else {
@@ -696,7 +727,7 @@ class SettingItemsAdapter(
         // ダイアログの出力
         // 実装元がfragmentの場合
         if (fragment != null && fragmentManager != null) {
-            item.buildDialog().show(fragment as Fragment, fragmentManager as FragmentManager)
+            item.buildDialog().show(fragment!!, fragmentManager!!)
         }
         // 実装元がactivityの場合
         else {
@@ -735,13 +766,14 @@ class SettingItemsAdapter(
              * @param position アダプター内のアイテムの位置
              */
             override fun onItemClick(view: View, position: Int) {
-                // 編集エリアを表示する
+                // 編集エリアを閉じている場合
                 if (holder.getEditorArea().visibility == GONE) {
+                    // 編集エリアを表示する
                     holder.rotateDropDown(true)
-                    if (item.text.isNotEmpty())
-                        holder.getEditor().setText(item.text)
+                    if (item.text.isNotEmpty()) holder.getEditor().setText(item.text)
                     holder.getEditorArea().visibility = VISIBLE
                 }
+                // 編集エリアを表示している場合
                 else {
                     // 文字入力処理を終了
                     finishEditText(holder)
@@ -759,8 +791,8 @@ class SettingItemsAdapter(
             item.text = holder.text
             holder.rotateDropDown(false)
             // 変更後の処理がある場合
-            if (item.textChangedListener != null) {
-                item.textChangedListener!!.onTextChanged(item.text)
+            if (item.textChangeListener != null) {
+                item.textChangeListener!!.onTextChange(this, item.text)
             }
         }
     }
@@ -808,5 +840,50 @@ class SettingItemsAdapter(
                 item.checkExternalStoragePermission(context)
             }
         }
+    }
+
+    /**
+     * リクエストコードの配列を作成する
+     *
+     * @return nullを含む数値型の配列
+     */
+    private fun requestCodeArray(): ArrayList<Int?> {
+        val reqCodeArray: ArrayList<Int?> = ArrayList()
+        // 各要素について、requestCodeの項目があるかをクラス名で判断する
+        // フィルタリングが困難なため、各要素を調べる方式を取っている
+        itemsList.forEach {
+            when(it) {
+                // 単一選択
+                is SingleSelectItem -> {
+                    val item : SingleSelectItem = it
+                    reqCodeArray.add(item.requestCode)
+                }
+                // 複数選択
+                is MultiSelectItem -> {
+                    val item : MultiSelectItem = it
+                    reqCodeArray.add(item.requestCode)
+                }
+                // 日付
+                is DateItem -> {
+                    val item : DateItem = it
+                    reqCodeArray.add(item.requestCode)
+                }
+                // 時刻
+                is TimeItem -> {
+                    val item : TimeItem = it
+                    reqCodeArray.add(item.requestCode)
+                }
+                // ファイル選択
+                is StorageFileSelectItem -> {
+                    val item : StorageFileSelectItem = it
+                    reqCodeArray.add(item.requestCode)
+                }
+                // requestCodeを使用しないアイテム
+                else -> {
+                    reqCodeArray.add(null)
+                }
+            }
+        }
+        return reqCodeArray
     }
 }

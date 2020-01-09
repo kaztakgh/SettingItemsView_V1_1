@@ -9,7 +9,7 @@
 ### Types
 
 | [CREATOR](-c-r-e-a-t-o-r/index.md) | `companion object CREATOR : `[`Creator`](https://developer.android.com/reference/android/os/Parcelable/Creator.html)`<`[`SwitchItem`](./index.md)`>` |
-| [OnValueChangedListener](-on-value-changed-listener/index.md) | `interface OnValueChangedListener`<br>スイッチのチェックが変更されたときの処理 |
+| [OnItemStateChangeListener](-on-item-state-change-listener/index.md) | `interface OnItemStateChangeListener` |
 
 ### Constructors
 
@@ -20,11 +20,11 @@
 | [bmpIcon](bmp-icon.md) | `val bmpIcon: `[`Bitmap`](https://developer.android.com/reference/android/graphics/Bitmap.html)`?`<br>左側に表示するアイコン(省略時null) |
 | [checked](checked.md) | `var checked: `[`Boolean`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html)<br>チェック(省略時false) |
 | [enabled](enabled.md) | `var enabled: `[`Boolean`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html)<br>選択可能であるか(省略時true) |
+| [stateChangedListener](state-changed-listener.md) | `var stateChangedListener: `[`OnItemStateChangeListener`](-on-item-state-change-listener/index.md)`?` |
 | [tag](tag.md) | `val tag: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)<br>タグ(識別子、省略不可) |
 | [textOnFalse](text-on-false.md) | `val textOnFalse: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)<br>OFFの時に表示するテキスト(省略時OFF) |
 | [textOnTrue](text-on-true.md) | `val textOnTrue: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)<br>ONの時に表示するテキスト(省略時ON) |
 | [title](title.md) | `val title: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)<br>タイトル(省略不可) |
-| [valueChangedListener](value-changed-listener.md) | `var valueChangedListener: `[`OnValueChangedListener`](-on-value-changed-listener/index.md)`?` |
 
 ### Functions
 

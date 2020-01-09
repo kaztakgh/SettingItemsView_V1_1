@@ -62,15 +62,22 @@ data class SwitchItem(
     }
 
     /**
-     * スイッチのチェックが変更されたときの処理
+     * @since v1.2.0
+     * アイテムの状態が変更されたときの処理
+     * SettingItemsAdapterで使用する
+     * 定義はActivity/Fragmentで行う
      */
-    interface OnValueChangedListener {
+    interface OnItemStateChangeListener {
         /**
          * スイッチのチェックが変更されたときの処理
          *
+         * @param adapter [SettingItemsAdapter]
          * @param checked スイッチの状態
          */
-        fun onSwitchCheckChanged(checked: Boolean)
+        fun onSwitchCheckChange(
+            adapter: SettingItemsAdapter,
+            checked: Boolean
+        )
     }
-    var valueChangedListener: OnValueChangedListener? = null
+    var stateChangedListener: OnItemStateChangeListener? = null
 }

@@ -31,11 +31,17 @@ class SettingItemsView : RecyclerView {
      */
     var fragmentManager: FragmentManager? = null
 
+    /**
+     * 表示用のアダプター
+     */
     private lateinit var itemsAdapter: SettingItemsAdapter
     // スクロール位置(アクティビティの復帰対策)
     private var scrollPosition: Int = 0
     private var scrollPositionY: Int = 0
 
+    /**
+     * コンストラクタ
+     */
     constructor(context: Context) : super(context, null)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
 
@@ -49,13 +55,8 @@ class SettingItemsView : RecyclerView {
         check(isUniqueTag(itemsList)) {context.resources.getText(R.string.unique_tag_exception)}
         // アダプターのセット
         layoutManager = LinearLayoutManager(context)
-        itemsAdapter = SettingItemsAdapter(itemsList)
+        itemsAdapter = SettingItemsAdapter(itemsList, fragment, fragmentManager)
         adapter = itemsAdapter
-        if (fragment !== null && fragmentManager !== null) {
-            // Fragmentを利用した際のフラグメント登録
-            itemsAdapter.fragment = fragment
-            itemsAdapter.fragmentManager = fragmentManager
-        }
         // 区切り線のセット
         val itemDecoration = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
         addItemDecoration(itemDecoration)
@@ -250,95 +251,11 @@ class SettingItemsView : RecyclerView {
     }
 
     /**
-     * タグからアダプター内アイテムを取得する
-     * 取得した際にアダプター内の状態を利用するには、Activity/Fragmentでキャストを行うこと
+     * adapterの取得
      *
-     * @param tag タグ
-     * @return アダプター内アイテム
+     * @return [SettingItemsAdapter] SettingItemsAdapter
      */
-    fun findItemByTag(tag: String): ItemInterface {
-        // 該当するタグの位置を取得する
-        val itemPos: Int = getAdapterTagArray().indexOf(tag)
-        return itemsAdapter.itemsList[itemPos]
-    }
-
-    /**
-     * リクエストコードからアダプター内アイテムを取得する
-     * 取得した際にアダプター内の状態を利用するには、Activity/Fragmentでキャストを行うこと
-     *
-     * @param requestCode リクエストコード
-     * @return アダプター内アイテム
-     */
-    fun findItemByRequestCode(requestCode: Int): ItemInterface {
-        // リクエストコードの配列を取得する
-        val reqCodeArray: ArrayList<Int?> = requestCodeArray()
-        // 該当するリクエストコードの位置を取得する
-        val itemPos: Int = reqCodeArray.indexOf(requestCode)
-        return itemsAdapter.itemsList[itemPos]
-    }
-
-    /**
-     * リクエストコードの配列を作成する
-     *
-     * @return nullを含む数値型の配列
-     */
-    private fun requestCodeArray(): ArrayList<Int?> {
-        val reqCodeArray: ArrayList<Int?> = ArrayList()
-        // 各要素について、requestCodeの項目があるかをクラス名で判断する
-        // フィルタリングが困難なため、各要素を調べる方式を取っている
-        itemsAdapter.itemsList.forEach {
-            when(it) {
-                // 単一選択
-                is SingleSelectItem -> {
-                    val item : SingleSelectItem = it
-                    reqCodeArray.add(item.requestCode)
-                }
-                // 複数選択
-                is MultiSelectItem -> {
-                    val item : MultiSelectItem = it
-                    reqCodeArray.add(item.requestCode)
-                }
-                // 日付
-                is DateItem -> {
-                    val item : DateItem = it
-                    reqCodeArray.add(item.requestCode)
-                }
-                // 時刻
-                is TimeItem -> {
-                    val item : TimeItem = it
-                    reqCodeArray.add(item.requestCode)
-                }
-                // ファイル選択
-                is StorageFileSelectItem -> {
-                    val item : StorageFileSelectItem = it
-                    reqCodeArray.add(item.requestCode)
-                }
-                // requestCodeを使用しないアイテム
-                else -> {
-                    reqCodeArray.add(null)
-                }
-            }
-        }
-        return reqCodeArray
-    }
-
-    /**
-     * タグの配列を取得する
-     * @since v1.1.0
-     *
-     * @return 各要素をタグでフィルタリングした配列
-     */
-    private fun getAdapterTagArray() : List<String> = itemsAdapter.itemsList.map { it.tag }
-
-    /**
-     * アダプター内にアイテムが含まれるかを調べる
-     *
-     * @param item アイテム
-     * @return true:存在する, false:存在しない
-     */
-    private fun isContainItemFromAdapter(item: ItemInterface): Boolean {
-        return itemsAdapter.itemsList.contains(item)
-    }
+    fun getSettingItemsAdapter(): SettingItemsAdapter = adapter as SettingItemsAdapter
 
     /**
      * タグの重複チェック
@@ -349,48 +266,6 @@ class SettingItemsView : RecyclerView {
     private fun isUniqueTag(list: ArrayList<ItemInterface>): Boolean {
         val distinctTagArray: List<String> = list.map { it.tag }.distinct()
         return distinctTagArray.size == list.size
-    }
-
-    /**
-     * アイテムの更新
-     * @deprecated v1.1.0
-     *
-     * @param item 更新元のアイテム
-     * @param update 更新後のアイテム
-     */
-    @Deprecated(message = "アイテムの検索が安定しないため")
-    fun updateItem(item: ItemInterface, update: ItemInterface) {
-        // 更新元のアイテムが見つからない場合、処理終了
-        if (!this.isContainItemFromAdapter(item)) return
-
-        // 更新アイテムのAdapterにおける位置を取得
-        val position: Int = itemsAdapter.itemsList.indexOf(item)
-        // Adapterのリストを更新
-        itemsAdapter.itemsList[position] = update
-        // 画面の更新
-        // レイアウトの維持のために位置と更新アイテムをパラメータに含める
-        itemsAdapter.notifyItemChanged(position, update)
-    }
-
-    /**
-     * アイテムの更新
-     * @since v1.1.0
-     *
-     * @param tag 更新対象のアイテムのタグ
-     * @param item 更新内容
-     */
-    fun updateItem(tag: String, item: ItemInterface) {
-        // 各要素をタグでフィルタリングする
-        // 該当するタグの位置を取得する
-        val itemPos: Int = getAdapterTagArray().indexOf(tag)
-        // タグの位置が0以上かつ更新元のアイテムのタグが一致する必要がある
-        require(itemPos >= 0 && itemsAdapter.itemsList[itemPos].tag == item.tag)
-
-        // Adapterのリストを更新
-        itemsAdapter.itemsList[itemPos] = item
-        // 画面の更新処理
-        // レイアウトの維持のために位置と更新アイテムをパラメータに含める
-        itemsAdapter.notifyItemChanged(itemPos, item)
     }
 
     /**

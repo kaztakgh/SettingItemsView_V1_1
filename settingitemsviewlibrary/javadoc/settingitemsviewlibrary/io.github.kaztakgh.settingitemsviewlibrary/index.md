@@ -10,7 +10,7 @@
 | [ItemInterface](-item-interface/index.md) | `interface ItemInterface`<br>設定アイテムの共通要素     省略不可能もしくは非推奨の要素のみ記載する         アイテムを作成するときはこのinterfaceを継承すること |
 | [MultiSelectItem](-multi-select-item/index.md) | `data class MultiSelectItem : `[`ItemInterface`](-item-interface/index.md)`, `[`Parcelable`](https://developer.android.com/reference/android/os/Parcelable.html)<br>指定されたものから複数選択するアイテムの作成     SingleSelectItemと同様に、選択するものに画像、音楽などを追加することができる         アイテムを押下したとき、ダイアログを表示する |
 | [NormalItemViewHolder](-normal-item-view-holder/index.md) | `open class NormalItemViewHolder : ViewHolder`<br>SettingItemsViewのタイトル・テキスト・アイコンで表示されるアイテムの表示に使用する |
-| [SeekBarItem](-seek-bar-item/index.md) | `data class SeekBarItem : `[`ItemInterface`](-item-interface/index.md)`, `[`Parcelable`](https://developer.android.com/reference/android/os/Parcelable.html) |
+| [SeekBarItem](-seek-bar-item/index.md) | `data class SeekBarItem : `[`ItemInterface`](-item-interface/index.md)`, `[`Parcelable`](https://developer.android.com/reference/android/os/Parcelable.html)<br>SeekBarで値を指定するアイテムの作成 |
 | [SettingItemsAdapter](-setting-items-adapter/index.md) | `class SettingItemsAdapter : Adapter<ViewHolder>`<br>RecyclerViewにアイテムを表示するためのアダプター |
 | [SettingItemsView](-setting-items-view/index.md) | `class SettingItemsView : RecyclerView` |
 | [SingleSelectItem](-single-select-item/index.md) | `data class SingleSelectItem : `[`ItemInterface`](-item-interface/index.md)`, `[`Parcelable`](https://developer.android.com/reference/android/os/Parcelable.html)<br>指定されたものから1つ選択するアイテムの作成     SpinnerItemと比較すると、選択するものに画像、音楽などを追加することができる         アイテムを押下したとき、ダイアログを表示する |

@@ -9,7 +9,7 @@ Spinnerで状態を指定するアイテムの作成
 ### Types
 
 | [CREATOR](-c-r-e-a-t-o-r/index.md) | `companion object CREATOR : `[`Creator`](https://developer.android.com/reference/android/os/Parcelable/Creator.html)`<`[`SpinnerItem`](./index.md)`>` |
-| [OnValueChangedListener](-on-value-changed-listener/index.md) | `interface OnValueChangedListener`<br>スピナーの選択肢が変更されたときの処理 |
+| [OnItemStateChangeListener](-on-item-state-change-listener/index.md) | `interface OnItemStateChangeListener` |
 
 ### Constructors
 
@@ -22,9 +22,9 @@ Spinnerで状態を指定するアイテムの作成
 | [focusable](focusable.md) | `var focusable: `[`Boolean`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html)<br>選択した操作があるか 初期値はfalse固定 |
 | [options](options.md) | `val options: `[`Array`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-array/index.html)`<`[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`>`<br>選択肢一覧(省略不可) |
 | [select](select.md) | `var select: `[`Int`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html)<br>初期選択位置(省略時0) |
+| [selectChangeListener](select-change-listener.md) | `var selectChangeListener: `[`OnItemStateChangeListener`](-on-item-state-change-listener/index.md)`?` |
 | [tag](tag.md) | `val tag: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)<br>タグ(識別子、省略不可) |
 | [title](title.md) | `val title: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)<br>タイトル(省略不可) |
-| [valueChangedListener](value-changed-listener.md) | `var valueChangedListener: `[`OnValueChangedListener`](-on-value-changed-listener/index.md)`?` |
 
 ### Functions
 

@@ -63,15 +63,22 @@ data class InputTextItem(
     }
 
     /**
-     * テキストを変更したときの処理
+     * @since v1.2.0
+     * アイテムの状態が変更されたときの処理
+     * SettingItemsAdapterで使用する
+     * 定義はActivity/Fragmentで行う
      */
-    interface OnTextChangedListener {
+    interface OnItemStateChangeListener {
         /**
          * テキストを変更したときの処理
          *
+         * @param adapter [SettingItemsAdapter]
          * @param text 入力されたテキスト
          */
-        fun onTextChanged(text: String)
+        fun onTextChange(
+            adapter: SettingItemsAdapter,
+            text: String
+        )
     }
-    var textChangedListener: OnTextChangedListener? = null
+    var textChangeListener: OnItemStateChangeListener? = null
 }

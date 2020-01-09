@@ -6,5 +6,8 @@
 
 Overrides [ItemInterface.title](../-item-interface/title.md)
 
-タイトル
+タイトル(省略不可)
 
+### Property
+
+`title` - タイトル(省略不可)

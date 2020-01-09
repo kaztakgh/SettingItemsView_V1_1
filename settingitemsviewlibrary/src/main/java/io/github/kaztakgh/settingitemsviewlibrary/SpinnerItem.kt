@@ -88,15 +88,22 @@ data class SpinnerItem(
     var focusable : Boolean = false
 
     /**
-     * スピナーの選択肢が変更されたときの処理
+     * @since v1.2.0
+     * アイテムの状態が変更されたときの処理
+     * SettingItemsAdapterで使用する
+     * 定義はActivity/Fragmentで行う
      */
-    interface OnValueChangedListener {
+    interface OnItemStateChangeListener {
         /**
          * スピナーの選択肢が変更されたときの追加処理
          *
-         * @param pos セレクタの選択肢ポジション
+         * @param adapter [SettingItemsAdapter]
+         * @param position セレクタの選択肢ポジション
          */
-        fun onSelectorItemChanged(pos: Int)
+        fun onItemSelectChanged(
+            adapter: SettingItemsAdapter,
+            position: Int
+        )
     }
-    var valueChangedListener: OnValueChangedListener? = null
+    var selectChangeListener: OnItemStateChangeListener? = null
 }

@@ -6,5 +6,8 @@
 
 Overrides [ItemInterface.tag](../-item-interface/tag.md)
 
-タグ
+タグ(識別子、省略不可)
 
+### Property
+
+`tag` - タグ(識別子、省略不可)

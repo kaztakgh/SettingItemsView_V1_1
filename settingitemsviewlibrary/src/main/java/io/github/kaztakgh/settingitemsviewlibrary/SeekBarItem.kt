@@ -7,6 +7,20 @@ import android.graphics.Bitmap
 import android.os.Parcel
 import android.os.Parcelable
 
+/**
+ * SeekBarで値を指定するアイテムの作成
+ *
+ * @property title タイトル(省略不可)
+ * @property tag タグ(識別子、省略不可)
+ * @property bmpIcon 左側に表示するアイコン(省略時null)
+ * @property enabled 選択可能であるか(省略時true)
+ * @property state バーの初期値(省略時0)
+ * @property max バーの最大値(省略時100)
+ * @property min バーの最小値(省略時0)
+ * @property div バーの分割値(省略時1)
+ * @property unit 単位(省略時無し)
+ * @property paramsArray 値の配列<br>このプロパティを指定した場合、バーの値の指定方法が配列に準拠する
+ */
 data class SeekBarItem(
     override val title: String,
     override val tag: String,
@@ -100,7 +114,7 @@ data class SeekBarItem(
      *
      * @return 数値の配列
      */
-    fun createParamsArray() : IntArray {
+    internal fun createParamsArray() : IntArray {
         if (paramsArray != null) return paramsArray
         val range: Int = max - min
         val size: Int = range / div + 1
@@ -108,15 +122,22 @@ data class SeekBarItem(
     }
 
     /**
-     * バーの値が変更されたときの処理
+     * @since v1.2.0
+     * アイテムの状態が変更されたときの処理
+     * SettingItemsAdapterで使用する
+     * 定義はActivity/Fragmentで行う
      */
-    interface OnValueChangedListener {
+    interface OnItemStateChangeListener {
         /**
-         * バーの値が変更されたときの追加処理
+         * シークバーの値を変更した後の処理
          *
-         * @param value セットした値
+         * @param adapter [SettingItemsAdapter]
+         * @param progress シークバーのプログレス
          */
-        fun onSelectorItemChanged(value: Int)
+        fun onItemValueChange(
+            adapter: SettingItemsAdapter,
+            progress: Int
+        )
     }
-    var valueChangedListener: OnValueChangedListener? = null
+    var valueChangeListener: OnItemStateChangeListener? = null
 }

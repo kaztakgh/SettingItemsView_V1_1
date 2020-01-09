@@ -9,7 +9,7 @@
 ### Types
 
 | [CREATOR](-c-r-e-a-t-o-r/index.md) | `companion object CREATOR : `[`Creator`](https://developer.android.com/reference/android/os/Parcelable/Creator.html)`<`[`InputTextItem`](./index.md)`>` |
-| [OnTextChangedListener](-on-text-changed-listener/index.md) | `interface OnTextChangedListener`<br>テキストを変更したときの処理 |
+| [OnItemStateChangeListener](-on-item-state-change-listener/index.md) | `interface OnItemStateChangeListener` |
 
 ### Constructors
 
@@ -23,7 +23,7 @@
 | [length](length.md) | `val length: `[`Int`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html)<br>テキストの長さ(省略時はViewHolderで指定した長さを利用する) |
 | [tag](tag.md) | `val tag: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)<br>タグ(識別子、省略不可) |
 | [text](text.md) | `var text: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)<br>テキスト |
-| [textChangedListener](text-changed-listener.md) | `var textChangedListener: `[`OnTextChangedListener`](-on-text-changed-listener/index.md)`?` |
+| [textChangeListener](text-change-listener.md) | `var textChangeListener: `[`OnItemStateChangeListener`](-on-item-state-change-listener/index.md)`?` |
 | [title](title.md) | `val title: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)<br>タイトル(省略不可) |
 
 ### Functions

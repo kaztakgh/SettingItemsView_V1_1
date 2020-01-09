@@ -8,23 +8,18 @@ RecyclerViewにアイテムを表示するためのアダプター
 
 ### Constructors
 
-| [&lt;init&gt;](-init-.md) | `SettingItemsAdapter(itemsList: `[`ArrayList`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-array-list/index.html)`<`[`ItemInterface`](../-item-interface/index.md)`>)`<br>RecyclerViewにアイテムを表示するためのアダプター |
-
-### Properties
-
-| [context](context.md) | `lateinit var context: `[`Context`](https://developer.android.com/reference/android/content/Context.html) |
-| [fragment](fragment.md) | `var fragment: Fragment?`<br>Fragmentを利用するときにダイアログ系のアイテムを使用する場合は指定すること |
-| [fragmentManager](fragment-manager.md) | `var fragmentManager: FragmentManager?`<br>Fragmentを利用するときにダイアログ系のアイテムを使用する場合は指定すること |
-| [itemsList](items-list.md) | `var itemsList: `[`ArrayList`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-array-list/index.html)`<`[`ItemInterface`](../-item-interface/index.md)`>`<br>Viewで表示するアイテムのリスト |
+| [&lt;init&gt;](-init-.md) | `SettingItemsAdapter(itemsList: `[`ArrayList`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-array-list/index.html)`<`[`ItemInterface`](../-item-interface/index.md)`>, fragment: Fragment? = null, fragmentManager: FragmentManager? = null)`<br>RecyclerViewにアイテムを表示するためのアダプター |
 
 ### Functions
 
 | [getItemCount](get-item-count.md) | `fun getItemCount(): `[`Int`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html)<br>アダプターに登録されたリストの要素数を返す |
+| [getItemFromRequestCode](get-item-from-request-code.md) | `fun getItemFromRequestCode(requestCode: `[`Int`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html)`): `[`ItemInterface`](../-item-interface/index.md)<br>リクエストコードからアダプター内アイテムを取得する 取得した際にアダプター内の状態を利用するには、Activity/Fragmentでキャストを行うこと |
 | [getItemViewType](get-item-view-type.md) | `fun getItemViewType(position: `[`Int`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html)`): `[`Int`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html)<br>Return the view type of the item at `position` for the purposes of view recycling. |
 | [onAttachedToRecyclerView](on-attached-to-recycler-view.md) | `fun onAttachedToRecyclerView(recyclerView: RecyclerView): `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)<br>Called by RecyclerView when it starts observing this Adapter. |
 | [onBindViewHolder](on-bind-view-holder.md) | `fun onBindViewHolder(holder: ViewHolder, position: `[`Int`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html)`): `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)<br>Called by RecyclerView to display the data at the specified position. This method should update the contents of the [ViewHolder.itemView](#) to reflect the item at the given position. |
 | [onCreateViewHolder](on-create-view-holder.md) | `fun onCreateViewHolder(parent: `[`ViewGroup`](https://developer.android.com/reference/android/view/ViewGroup.html)`, viewType: `[`Int`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html)`): ViewHolder`<br>Called when RecyclerView needs a new [ViewHolder](#) of the given type to represent an item. |
 | [onDetachedFromRecyclerView](on-detached-from-recycler-view.md) | `fun onDetachedFromRecyclerView(recyclerView: RecyclerView): `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)<br>Called by RecyclerView when it stops observing this Adapter. |
+| [update](update.md) | `fun update(tag: `[`String`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)`, item: `[`ItemInterface`](../-item-interface/index.md)`): `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)<br>指定したタグを持つアイテムの更新 |
 
 ### Companion Object Properties
 

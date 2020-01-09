@@ -2,7 +2,7 @@
 
 # &lt;init&gt;
 
-`SettingItemsAdapter(itemsList: `[`ArrayList`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-array-list/index.html)`<`[`ItemInterface`](../-item-interface/index.md)`>)`
+`SettingItemsAdapter(itemsList: `[`ArrayList`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-array-list/index.html)`<`[`ItemInterface`](../-item-interface/index.md)`>, fragment: Fragment? = null, fragmentManager: FragmentManager? = null)`
 
 RecyclerViewにアイテムを表示するためのアダプター
 

@@ -3,3 +3,9 @@
 # div
 
 `val div: `[`Int`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html)
+
+バーの分割値(省略時1)
+
+### Property
+
+`div` - バーの分割値(省略時1)
