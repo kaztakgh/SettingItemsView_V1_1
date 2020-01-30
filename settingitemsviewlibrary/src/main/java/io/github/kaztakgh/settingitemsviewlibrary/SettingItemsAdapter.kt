@@ -296,6 +296,14 @@ class SettingItemsAdapter(
     }
 
     /**
+     * リストのデータを取得する
+     * @since v1.2.1
+     *
+     * @return Viewで表示するアイテムのリスト
+     */
+    fun getItemsList() : ArrayList<ItemInterface> = itemsList
+
+    /**
      * 指定したタグを持つアイテムの更新
      * @since v1.2.0
      * @exception IllegalArgumentException itemsListのタグを変更しようとした場合に発生
