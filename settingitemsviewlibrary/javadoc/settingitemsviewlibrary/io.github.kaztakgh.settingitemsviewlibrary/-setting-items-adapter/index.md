@@ -13,7 +13,7 @@ RecyclerViewにアイテムを表示するためのアダプター
 ### Functions
 
 | [getItemCount](get-item-count.md) | `fun getItemCount(): `[`Int`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html)<br>アダプターに登録されたリストの要素数を返す |
-| [getItemFromRequestCode](get-item-from-request-code.md) | `fun getItemFromRequestCode(requestCode: `[`Int`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html)`): `[`ItemInterface`](../-item-interface/index.md)<br>リクエストコードからアダプター内アイテムを取得する 取得した際にアダプター内の状態を利用するには、Activity/Fragmentでキャストを行うこと |
+| [getItemFromRequestCode](get-item-from-request-code.md) | `fun getItemFromRequestCode(requestCode: `[`Int`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html)`): `[`ItemInterface`](../-item-interface/index.md)`?`<br>リクエストコードからアダプター内アイテムを取得する 取得した際にアダプター内の状態を利用するには、Activity/Fragmentでキャストを行うこと リクエストコードを使用しないアイテムの場合はnullを返す(v1.2.2より) |
 | [getItemViewType](get-item-view-type.md) | `fun getItemViewType(position: `[`Int`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html)`): `[`Int`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html)<br>Return the view type of the item at `position` for the purposes of view recycling. |
 | [getItemsList](get-items-list.md) | `fun getItemsList(): `[`ArrayList`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-array-list/index.html)`<`[`ItemInterface`](../-item-interface/index.md)`>`<br>リストのデータを取得する |
 | [onAttachedToRecyclerView](on-attached-to-recycler-view.md) | `fun onAttachedToRecyclerView(recyclerView: RecyclerView): `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)<br>Called by RecyclerView when it starts observing this Adapter. |

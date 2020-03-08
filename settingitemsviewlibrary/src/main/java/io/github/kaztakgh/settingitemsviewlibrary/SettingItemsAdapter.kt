@@ -330,17 +330,18 @@ class SettingItemsAdapter(
     /**
      * リクエストコードからアダプター内アイテムを取得する
      * 取得した際にアダプター内の状態を利用するには、Activity/Fragmentでキャストを行うこと
+     * リクエストコードを使用しないアイテムの場合はnullを返す(v1.2.2より)
      * @since v1.2.0
      *
      * @param requestCode リクエストコード
-     * @return アダプター内アイテム
+     * @return アダプター内アイテム|null
      */
-    fun getItemFromRequestCode(requestCode: Int): ItemInterface {
+    fun getItemFromRequestCode(requestCode: Int): ItemInterface? {
         // リクエストコードの配列を取得する
         val reqCodeArray: ArrayList<Int?> = requestCodeArray()
         // 該当するリクエストコードの位置を取得する
         val itemPos: Int = reqCodeArray.indexOf(requestCode)
-        return itemsList[itemPos]
+        return if (itemPos < 0) null else itemsList[itemPos]
     }
 
     /**
