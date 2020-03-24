@@ -314,11 +314,11 @@ class SettingItemsAdapter(
     fun update(tag: String, item: ItemInterface) {
         // 更新箇所の検索
         // itemsListはタグを一意にする必要があるため、indexOfFirstで検索可能
-        val index = itemsList.indexOfFirst { it.tag === tag }
+        val index = itemsList.indexOfFirst { it.tag == tag }
         // 該当する箇所がない場合は処理を終了
         if (index < 0) return
         // 更新アイテムのタグと指定タグが異なる場合はエラー処理を行う
-        check(index >= 0 && itemsList[index].tag === item.tag)
+        check(index >= 0 && itemsList[index].tag == item.tag)
 
         // itemsListの更新
         itemsList[index] = item
@@ -832,7 +832,12 @@ class SettingItemsAdapter(
         holder.bmpIcon = item.bmpIcon
         holder.isSelectable = item.enabled
         // ファイルパスの設定
-        holder.text = if (item.uri != null) item.getContentPathStringFromUri(context, item.uri!!) else ""
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            holder.text = if (item.uri != null) item.getContentFilePathDescriptor(context, item.uri!!) else ""
+        }
+        else {
+            holder.text = if (item.uri != null) item.getContentPathStringFromUri(context, item.uri!!) else ""
+        }
         // アイテムが有効ではない場合はここで処理を終了
         if (!item.enabled) return
 

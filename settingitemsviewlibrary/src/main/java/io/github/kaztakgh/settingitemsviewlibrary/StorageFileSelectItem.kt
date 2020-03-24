@@ -181,6 +181,7 @@ data class StorageFileSelectItem(
             selectionArgs =
                 arrayOf(id.split(":".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[1])
         }
+        // API Level29でDATAが非推奨に変更
         if (mimeTypeResult != null) {
             projection = when {
                 mimeTypeResult.startsWith("audio") -> arrayOf(MediaStore.Audio.Media.DATA)
@@ -193,8 +194,10 @@ data class StorageFileSelectItem(
             MediaStore.Files.getContentUri("external"),
             projection,
             selection,
-            selectionArgs, null
+            selectionArgs,
+            null
         )
+        // ファイル名の取得
         if (crsCursor != null) {
             crsCursor.moveToFirst()
             path = crsCursor.getString(0)
@@ -206,6 +209,40 @@ data class StorageFileSelectItem(
             val pathArray = path.split("/".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
             path = pathArray[pathArray.size - 1]
         }
+        return path
+    }
+
+    /**
+     * Uriからファイルパスを取得する
+     * 取得結果はフルパス表示不可
+     * ApiLevel:29以上
+     * @since v1.3.0
+     *
+     * @param context データ
+     * @param uri URI
+     * @return ファイルパス
+     */
+    @TargetApi(Build.VERSION_CODES.Q)
+    internal fun getContentFilePathDescriptor(context: Context, uri: Uri): String {
+        // 変数初期化
+        var path = ""
+        val cr = context.contentResolver
+        // 表示するファイル名の形式の選択
+        val projection = arrayOf(MediaStore.MediaColumns.DISPLAY_NAME)
+        val crsCursor = cr.query(
+            uri,
+            projection,
+            null,
+            null,
+            null
+        )
+        // ファイル名の取得
+        if (crsCursor != null) {
+            crsCursor.moveToFirst()
+            path = crsCursor.getString(0)
+            crsCursor.close()
+        }
+
         return path
     }
 }
