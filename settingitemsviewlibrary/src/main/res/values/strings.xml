@@ -5,6 +5,8 @@
     <string name="dialog_negative_label">Cancel</string>
     <!-- InputText -->
     <string name="button_text_confirm">確定</string>
+    <!-- Permission -->
+    <string name="permission_read_storage_file">ファイルを読み込むためのパーミッションが必要です</string>
     <!-- Exception -->
     <string name="unique_tag_exception">タグは一意である必要があります</string>
 </resources>

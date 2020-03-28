@@ -3,7 +3,7 @@
  */
 package io.github.kaztakgh.settingitemsviewlibrary
 
-import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+import android.Manifest.permission.READ_EXTERNAL_STORAGE
 import android.annotation.TargetApi
 import android.app.Activity
 import android.content.Context
@@ -107,18 +107,18 @@ data class StorageFileSelectItem(
             openDocument(context)
         else {
             // ダイアログ出力許可がある場合
-            if (ActivityCompat.shouldShowRequestPermissionRationale(context as Activity, WRITE_EXTERNAL_STORAGE)) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(context as Activity, READ_EXTERNAL_STORAGE)) {
                 // 許可を求めるパーミッションダイアログを出力する
                 ActivityCompat.requestPermissions(
                     context,
-                    arrayOf(WRITE_EXTERNAL_STORAGE),
+                    arrayOf(READ_EXTERNAL_STORAGE),
                     requestCode
                 )
             }
             // ダイアログ出力許可がない場合
             else
-            // 操作できないという警告文を出力する
-                Toast.makeText(context, "ファイルを読み込むためのパーミッションが必要です", Toast.LENGTH_SHORT).show()
+                // 操作できないという警告文を出力する
+                Toast.makeText(context, context.resources.getText(R.string.permission_read_storage_file), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -126,16 +126,16 @@ data class StorageFileSelectItem(
      * WRITE_EXTERNAL_STORAGEのパーミッション確認
      *
      * @param context データ
-     * @return boolean WRITE_EXTERNAL_STORAGEのパーミッションの戻り値がPERMISSION_GRANTEDであるか
+     * @return boolean READ_EXTERNAL_STORAGEのパーミッションの戻り値がPERMISSION_GRANTEDであるか
      */
     @TargetApi(23)
     private fun checkPermission(context: Context): Boolean {
-        return ContextCompat.checkSelfPermission(context, WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+        return ContextCompat.checkSelfPermission(context, READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
     }
 
     /**
      * SDKがLollipop以前の場合にファイル選択の画面を出力する処理を行う
-     * Marshmallow以降でも、WRITE_EXTERNAL_STORAGEのパーミッションを得た場合のファイル選択にはこの処理が必要
+     * Marshmallow以降でも、READ_EXTERNAL_STORAGEのパーミッションを得た場合のファイル選択にはこの処理が必要
      *
      * @param context データ
      */
